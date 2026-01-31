@@ -37,8 +37,8 @@ export default function Home() {
   };
 
   return (
-  return (
     <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+
 
       {/* Background Glow Effect */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gold-500/10 blur-[100px] rounded-full pointer-events-none" />
@@ -80,6 +80,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-    </div >
   );
 }
