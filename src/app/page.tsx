@@ -62,7 +62,7 @@ export default function Home() {
       </div>
 
       {/* Main Card */}
-      <div className="w-full max-w-lg relative group">
+      <div className="w-full max-w-5xl relative group">
 
         {/* Card Border Gradient */}
         <div className="absolute -inset-[1px] bg-gradient-to-br from-gold-600/50 via-gold-400/20 to-gold-600/50 rounded-xl blur-[1px] opacity-70" />
