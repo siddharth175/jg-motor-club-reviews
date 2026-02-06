@@ -31,7 +31,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
     onGenerate,
     isLoading,
 }) => {
-    const [name, setName] = useState("");
+
     const [service, setService] = useState<string>(SERVICES[0]);
     const [experience, setExperience] = useState("");
     const [error, setError] = useState("");
@@ -45,8 +45,8 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
             return;
         }
 
-        // Always defaults to 5 stars and AI mode now
-        onGenerate({ name, service, experience, rating: 5, mode: "ai" });
+        // Always defaults to 5 stars, AI mode, and no name now
+        onGenerate({ name: "", service, experience, rating: 5, mode: "ai" });
     };
 
     const addTag = (tag: string) => {
@@ -61,40 +61,25 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
 
                     <div className="space-y-4">
                         {/* Name & Service Row */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label htmlFor="name" className="text-xs uppercase tracking-wider text-slate-500 font-bold">
-                                    Name <span className="text-slate-600 font-normal">(Optional)</span>
-                                </label>
-                                <input
-                                    id="name"
-                                    type="text"
-                                    className="flex h-10 w-full rounded-md border border-white/10 bg-[#0a0a0a] px-3 text-sm text-slate-200 placeholder:text-slate-700 focus:border-gold-500/50 focus:outline-none focus:ring-1 focus:ring-gold-500/50 transition-all"
-                                    placeholder="Your Name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+
+                        <div className="space-y-2">
+                            <label htmlFor="service" className="text-xs uppercase tracking-wider text-slate-500 font-bold">
+                                Service
+                            </label>
+                            <div className="relative">
+                                <select
+                                    id="service"
+                                    className="flex h-10 w-full appearance-none rounded-md border border-white/10 bg-[#0a0a0a] px-3 text-sm text-slate-200 focus:border-gold-500/50 focus:outline-none focus:ring-1 focus:ring-gold-500/50 transition-all"
+                                    value={service}
+                                    onChange={(e) => setService(e.target.value)}
                                     disabled={isLoading}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="service" className="text-xs uppercase tracking-wider text-slate-500 font-bold">
-                                    Service
-                                </label>
-                                <div className="relative">
-                                    <select
-                                        id="service"
-                                        className="flex h-10 w-full appearance-none rounded-md border border-white/10 bg-[#0a0a0a] px-3 text-sm text-slate-200 focus:border-gold-500/50 focus:outline-none focus:ring-1 focus:ring-gold-500/50 transition-all"
-                                        value={service}
-                                        onChange={(e) => setService(e.target.value)}
-                                        disabled={isLoading}
-                                    >
-                                        {SERVICES.map((s) => (
-                                            <option key={s} value={s} className="bg-[#0a0a0a] text-slate-200">
-                                                {s}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                >
+                                    {SERVICES.map((s) => (
+                                        <option key={s} value={s} className="bg-[#0a0a0a] text-slate-200">
+                                            {s}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
