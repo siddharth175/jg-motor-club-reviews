@@ -3,20 +3,15 @@
 import { useState } from "react";
 import { ReviewForm, ReviewData } from "@/components/ReviewForm";
 import { ReviewAction } from "@/components/ReviewAction";
+import { LandingSelection } from "@/components/LandingSelection";
+import { RewardSidebar } from "@/components/RewardSelector";
 
 export default function Home() {
-  const [step, setStep] = useState<"form" | "result">("form");
+  const [step, setStep] = useState<"landing" | "form" | "result">("landing");
   const [generatedReview, setGeneratedReview] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async (data: ReviewData) => {
-    // If manual mode, skip the AI generation
-    if (data.mode === 'manual') {
-      setGeneratedReview(data.experience);
-      setStep("result");
-      return;
-    }
-
     setIsLoading(true);
     try {
       const response = await fetch("/api/generate", {
@@ -28,11 +23,6 @@ export default function Home() {
       if (!response.ok) throw new Error("Failed to generate review");
 
       const result = await response.json();
-
-      if (result.error) {
-        throw new Error(result.error);
-      }
-
       setGeneratedReview(result.review);
       setStep("result");
     } catch (error) {
@@ -44,48 +34,60 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-
-
-      {/* Background Glow Effect */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gold-500/10 blur-[100px] rounded-full pointer-events-none" />
-
-      {/* Header / Logo */}
-      <div className="mb-12 text-center relative z-10">
-        <h1 className="text-4xl md:text-5xl font-serif tracking-wider text-white drop-shadow-md" style={{ fontFamily: '"Playfair Display", serif' }}>
-          J & G MOTOR CLUB
-        </h1>
-        <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto my-4" />
-        <p className="text-gold-400 text-lg tracking-[0.2em] uppercase font-light">
-          Review Assistant
-        </p>
+    <main className="min-h-screen bg-[#0a0a0a] text-slate-200 p-4 sm:p-8 flex items-center justify-center font-sans tracking-tight">
+      {/* Background Gradients */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[600px] h-[600px] bg-gold-600/10 rounded-full blur-[120px] opacity-40 animate-pulse" />
+        <div className="absolute top-[40%] -right-[10%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[100px] opacity-30" />
       </div>
 
-      {/* Main Card */}
-      <div className="w-full max-w-5xl relative group">
-
-        {/* Card Border Gradient */}
-        <div className="absolute -inset-[1px] bg-gradient-to-br from-gold-600/50 via-gold-400/20 to-gold-600/50 rounded-xl blur-[1px] opacity-70" />
-
-        <div className="relative bg-[#0F0F0F] rounded-xl shadow-2xl overflow-hidden border border-white/10 p-1">
-          <div className="bg-[#0F0F0F] border border-gold-500/20 rounded-lg p-6 sm:p-10 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
-            <div className="mb-8 text-center">
-              <h2 className="text-2xl font-serif text-slate-100/90 drop-shadow-sm">
-                {step === "form" ? "Share Your Experience" : "Ready to Post!"}
-              </h2>
-            </div>
-
-            {step === "form" ? (
-              <ReviewForm onGenerate={handleGenerate} isLoading={isLoading} />
-            ) : (
-              <ReviewAction
-                initialReview={generatedReview}
-                onReset={() => setStep("form")}
-              />
-            )}
+      <div className="w-full max-w-5xl relative z-10">
+        <header className="mb-10 text-center space-y-2">
+          <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-gold-500 mb-2">
+            ✨ J & G Motor Club
           </div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 font-serif tracking-tight">
+            Review Assistant
+          </h1>
+        </header>
+
+        {/* Layout Grid */}
+        <div className="flex flex-col lg:flex-row gap-8">
+
+          {/* Main Content Area (2/3) */}
+          <div className="w-full lg:w-2/3">
+            <div className="relative group">
+              {/* Border Gradient */}
+              <div className="absolute -inset-[1px] bg-gradient-to-br from-gold-600/50 via-gold-400/20 to-gold-600/50 rounded-2xl blur-[1px] opacity-40" />
+
+              <div className="relative bg-[#0F0F0F] border border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 backdrop-blur-xl">
+
+                {step === "landing" && (
+                  <LandingSelection onSelectAI={() => setStep("form")} />
+                )}
+
+                {step === "form" && (
+                  <ReviewForm onGenerate={handleGenerate} isLoading={isLoading} />
+                )}
+
+                {step === "result" && (
+                  <ReviewAction
+                    initialReview={generatedReview}
+                    onReset={() => setStep("landing")}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar (1/3) - Always Visible */}
+          <div className="w-full lg:w-1/3">
+            <RewardSidebar />
+          </div>
+
         </div>
+
       </div>
-    </div>
+    </main>
   );
 }

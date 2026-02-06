@@ -40,8 +40,8 @@ const StarRating = ({ rating, setRating }: { rating: number; setRating: (r: numb
                 >
                     <Star
                         className={`w-8 h-8 ${star <= rating
-                                ? "fill-gold-500 text-gold-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]"
-                                : "fill-transparent text-slate-600 hover:text-gold-500/50"
+                            ? "fill-gold-500 text-gold-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]"
+                            : "fill-transparent text-slate-600 hover:text-gold-500/50"
                             }`}
                         strokeWidth={1.5}
                     />
@@ -152,8 +152,8 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
                                 type="button"
                                 onClick={() => setMode("ai")}
                                 className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === "ai"
-                                        ? "bg-gold-500 text-black shadow-lg"
-                                        : "text-slate-500 hover:text-slate-300"
+                                    ? "bg-gold-500 text-black shadow-lg"
+                                    : "text-slate-500 hover:text-slate-300"
                                     }`}
                             >
                                 Use AI Assistant
@@ -162,8 +162,8 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
                                 type="button"
                                 onClick={() => setMode("manual")}
                                 className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${mode === "manual"
-                                        ? "bg-slate-700 text-white shadow-lg"
-                                        : "text-slate-500 hover:text-slate-300"
+                                    ? "bg-slate-700 text-white shadow-lg"
+                                    : "text-slate-500 hover:text-slate-300"
                                     }`}
                             >
                                 Write My Own
@@ -220,8 +220,8 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
                                     type="button"
                                     onClick={toggleListening}
                                     className={`flex items-center space-x-1.5 px-2 py-1 rounded-full text-xs font-bold transition-all ${isListening
-                                            ? "bg-red-500/20 text-red-400 animate-pulse border border-red-500/50"
-                                            : "bg-white/5 text-slate-400 hover:bg-white/10 hover:text-gold-400"
+                                        ? "bg-red-500/20 text-red-400 animate-pulse border border-red-500/50"
+                                        : "bg-white/5 text-slate-400 hover:bg-white/10 hover:text-gold-400"
                                         }`}
                                 >
                                     {isListening ? <Mic className="w-3 h-3" /> : <MicOff className="w-3 h-3" />}
@@ -272,8 +272,8 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
                 <button
                     type="submit"
                     className={`group relative inline-flex h-14 w-full items-center justify-center rounded-xl px-8 text-base font-bold shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50 overflow-hidden ${mode === "ai"
-                            ? "bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400 text-black shadow-gold-900/20 hover:shadow-gold-500/20"
-                            : "bg-slate-100 text-black hover:bg-white shadow-white/10"
+                        ? "bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400 text-black shadow-gold-900/20 hover:shadow-gold-500/20"
+                        : "bg-slate-100 text-black hover:bg-white shadow-white/10"
                         }`}
                     disabled={isLoading}
                 >
@@ -299,10 +299,6 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
                 </button>
             </form>
 
-            {/* RIGHT COLUMN: ADS */}
-            <div className="w-full lg:w-1/3">
-                <RewardSidebar />
-            </div>
         </div>
     );
 };
