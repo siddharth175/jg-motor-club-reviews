@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ReviewForm, ReviewData } from "@/components/ReviewForm";
 import { ReviewAction } from "@/components/ReviewAction";
 import { LandingSelection } from "@/components/LandingSelection";
-import { RewardSidebar } from "@/components/RewardSelector";
 
 export default function Home() {
   const [step, setStep] = useState<"landing" | "form" | "result">("landing");
@@ -51,11 +50,11 @@ export default function Home() {
           </h1>
         </header>
 
-        {/* Layout Grid */}
-        <div className="flex flex-col lg:flex-row gap-8">
+        {/* Layout Grid - Centered Single Column */}
+        <div className="flex flex-col gap-8 max-w-3xl mx-auto">
 
-          {/* Main Content Area (2/3) */}
-          <div className="w-full lg:w-2/3">
+          {/* Main Content Area */}
+          <div className="w-full">
             <div className="relative group">
               {/* Border Gradient */}
               <div className="absolute -inset-[1px] bg-gradient-to-br from-gold-600/50 via-gold-400/20 to-gold-600/50 rounded-2xl blur-[1px] opacity-40" />
@@ -78,11 +77,6 @@ export default function Home() {
                 )}
               </div>
             </div>
-          </div>
-
-          {/* Right Sidebar (1/3) - Always Visible */}
-          <div className="w-full lg:w-1/3">
-            <RewardSidebar />
           </div>
 
         </div>

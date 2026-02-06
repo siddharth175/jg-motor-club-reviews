@@ -54,9 +54,9 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8">
-            {/* LEFT COLUMN: FORM */}
-            <form onSubmit={handleSubmit} className="w-full lg:w-2/3 space-y-8">
+        <div className="flex flex-col w-full">
+            {/* FULL WIDTH FORM */}
+            <form onSubmit={handleSubmit} className="w-full space-y-8">
                 <div className="space-y-6 bg-[#161616] p-6 rounded-xl border border-white/5">
 
                     <div className="space-y-4">
@@ -92,7 +92,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
                             <div className="relative group">
                                 <textarea
                                     id="experience"
-                                    className="flex min-h-[100px] w-full rounded-md border border-white/10 bg-[#0a0a0a] px-3 py-3 text-sm text-slate-200 placeholder:text-slate-700 focus:border-gold-500/50 focus:outline-none focus:ring-1 focus:ring-gold-500/50 transition-all resize-none"
+                                    className="flex min-h-[220px] w-full rounded-md border border-white/10 bg-[#0a0a0a] px-4 py-4 text-base text-slate-200 placeholder:text-slate-600 focus:border-gold-500/50 focus:outline-none focus:ring-2 focus:ring-gold-500/20 transition-all resize-none shadow-inner"
                                     placeholder="Ex: Fast service, Mike was helpful..."
                                     value={experience}
                                     onChange={(e) => setExperience(e.target.value)}
