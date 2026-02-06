@@ -10,6 +10,13 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async (data: ReviewData) => {
+    // If manual mode, skip the AI generation
+    if (data.mode === 'manual') {
+      setGeneratedReview(data.experience);
+      setStep("result");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await fetch("/api/generate", {
