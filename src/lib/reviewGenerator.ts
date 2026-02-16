@@ -1,26 +1,17 @@
 
 export const generateReview = (service: string, experience: string): string => {
-    // Expanded library of components with specific Chatham/Mechanic references
-    const openers = [
-        "I recently brought my car to J & G Motor Club in Chatham and had a fantastic experience.",
-        "Highly recommend J & G Motor Club! Best place in Chatham for auto repair.",
+    // SEPARATE OPENERS INTO GENERAL AND LOCATION-SPECIFIC
+    const openersGeneral = [
         "Just left J & G Motor Club and felt compelled to write a review.",
         "Great service at J & G Motor Club as always.",
         "Honestly, it's hard to find a good mechanic these days, but J & G is a gem.",
         "My experience at J & G Motor Club was outstanding from start to finish.",
-        "I've been going to J & G in Chatham for years and they never disappoint.",
-        "If you need car trouble fixed, this is the best place in Chatham to go.",
         "Can't say enough good things about the team at J & G.",
         "Finally found a mechanic I can trust.",
-        "After trying several mechanics in the area, J & G stands out as a good mechanic.",
         "Been taking my car here for months - consistently great.",
         "Friend recommended J & G and I'm so glad I listened.",
-        "Quick stop turned into finding my permanent shop in Chatham.",
-        "Local gem right here in Chatham.",
         "No BS, just honest work at J & G.",
-        "Skeptical at first but J & G proved they are a good mechanic.",
         "Best automotive service I've had in years.",
-        "Chatham locals know - J & G is the spot.",
         "Needed help fast and J & G delivered.",
         "Clean shop, fair prices, great work.",
         "My whole family goes to J & G now.",
@@ -33,7 +24,6 @@ export const generateReview = (service: string, experience: string): string => {
         "Professional service without the corporate feel.",
         "Small shop, big results.",
         "I don't usually write reviews, but J & G deserves it.",
-        "Found my new go-to mechanic in Chatham.",
         "Service was above and beyond what I expected.",
         "J & G Motor Club is a hidden treasure.",
         "The team at J & G really knows their stuff.",
@@ -41,7 +31,6 @@ export const generateReview = (service: string, experience: string): string => {
         "Exceptional service from start to finish.",
         "Reliable, honest, and skilled - hard to beat.",
         "J & G saved the day!",
-        "Top-notch auto repair in Chatham.",
         "Nothing but praise for J & G Motor Club.",
         "They made a stressful situation easy.",
         "Always a pleasure dealing with J & G.",
@@ -52,6 +41,19 @@ export const generateReview = (service: string, experience: string): string => {
         "Grateful for the honest advice and great work.",
         "The best car care experience I've had.",
         "J & G earned my trust immediately.",
+    ];
+
+    const openersLocation = [
+        "I recently brought my car to J & G Motor Club in Chatham and had a fantastic experience.",
+        "Highly recommend J & G Motor Club! Best place in Chatham for auto repair.",
+        "I've been going to J & G in Chatham for years and they never disappoint.",
+        "If you need car trouble fixed, this is the best place in Chatham to go.",
+        "After trying several mechanics in the area, J & G stands out.",
+        "Quick stop turned into finding my permanent shop in Chatham.",
+        "Local gem right here in Chatham.",
+        "Chatham locals know - J & G is the spot.",
+        "Found my new go-to mechanic in Chatham.",
+        "Top-notch auto repair in Chatham.",
     ];
 
     const serviceTemplates = [
@@ -104,7 +106,6 @@ export const generateReview = (service: string, experience: string): string => {
         "Old-school customer service done right.",
         "Won't go anywhere else from now on.",
         "Definitely a good mechanic you can rely on.",
-        "This is why they are the best place in Chatham.",
         "Knowledgeable and courteous staff.",
         "They went the extra mile.",
         "Fair, fast, and friendly.",
@@ -124,9 +125,9 @@ export const generateReview = (service: string, experience: string): string => {
         "Just a great group of people.",
     ];
 
-    const closings = [
+    // SEPARATE CLOSINGS INTO GENERAL AND LOCATION-SPECIFIC
+    const closingsGeneral = [
         "I'll definitely be coming back for future service.",
-        "If you need auto work in Chatham, this is the place to go.",
         "Five stars for the whole team!",
         "Thanks to J & G for keeping my car running smoothly.",
         "Highly recommended!",
@@ -144,7 +145,6 @@ export const generateReview = (service: string, experience: string): string => {
         "Already scheduled my next appointment.",
         "Tell your friends about J & G.",
         "Easy 5 stars.",
-        "Best place in Chatham for sure.",
         "So glad I found them.",
         "They have a customer for life.",
         "Don't hesitate to give them a call.",
@@ -158,8 +158,20 @@ export const generateReview = (service: string, experience: string): string => {
         "Ranked #1 in my book.",
         "A perfect 10/10.",
         "Grateful for their help.",
-        "Nice to have a reliable mechanic nearby.",
         "Highly satisfied.",
+    ];
+
+    const closingsLocation = [
+        "If you need auto work in Chatham, this is the place to go.",
+        "Best place in Chatham for sure.",
+        "Nice to have a reliable mechanic nearby in Chatham.",
+        "For anyone in Chatham looking for a mechanic, J & G is it.",
+        "Proud to support this Chatham business.",
+        "The go-to spot for Chatham drivers.",
+        "Glad to have them here in Chatham.",
+        "Chatham is lucky to have J & G.",
+        "Best auto shop in the Chatham area.",
+        "Worth the trip from anywhere in Chatham.",
     ];
 
     const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
@@ -174,6 +186,35 @@ export const generateReview = (service: string, experience: string): string => {
         .filter(s => s.length > 0)
         .map(s => s + ".");
 
+    // --- LOGIC TO ENSURE ~50% LOCATION MENTION ---
+    const shouldMentionLocation = Math.random() < 0.5; // Target: 50%
+    let locationMentioned = false;
+
+    // Helper to get an opener
+    const getOpener = () => {
+        if (shouldMentionLocation && !locationMentioned) {
+            // 50% chance to do it in opener if we need to mention location
+            if (Math.random() < 0.5) {
+                locationMentioned = true;
+                return pick(openersLocation);
+            }
+        }
+        return pick(openersGeneral);
+    };
+
+    // Helper to get a closing
+    const getClosing = () => {
+        if (shouldMentionLocation && !locationMentioned) {
+            // Must mention it now if we haven't yet
+            locationMentioned = true;
+            return pick(closingsLocation);
+        }
+        // If we already mentioned it, use general closing to avoid repetition
+        // Or if we don't need to mention it, use general
+        return pick(closingsGeneral);
+    };
+    // ---------------------------------------------
+
     // MORE STRUCTURE TYPES (increased from 6 to 10)
     const structureType = Math.floor(Math.random() * 10);
     let review = "";
@@ -181,11 +222,11 @@ export const generateReview = (service: string, experience: string): string => {
     if (structureType === 0) {
         // Classic: Opener -> Service -> Experience -> Quality -> Closing
         const parts = [
-            pick(openers),
+            getOpener(),
             pick(serviceTemplates)(service),
             experienceSentences[0] || "",
             pick(qualityLines),
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
@@ -195,18 +236,18 @@ export const generateReview = (service: string, experience: string): string => {
             pick(serviceTemplates)(service),
             experienceSentences[0] || "",
             pick(qualityLines),
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
     } else if (structureType === 2) {
         // Experience Focused
         const parts = [
-            pick(openers),
+            getOpener(),
             experienceSentences[0] || "",
             pick(qualityLines),
             `They really made the ${service} an easy process.`,
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
@@ -215,25 +256,25 @@ export const generateReview = (service: string, experience: string): string => {
         const parts = [
             pick(serviceTemplates)(service),
             experienceSentences[0] || pick(qualityLines),
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
     } else if (structureType === 4) {
         // Detailed (use all customer sentences)
         const parts = [
-            pick(openers),
+            getOpener(),
             pick(serviceTemplates)(service),
             ...experienceSentences,
             pick(qualityLines),
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
     } else if (structureType === 5) {
         // Recommendation-first
         const parts = [
-            pick(closings),
+            getClosing(),
             pick(serviceTemplates)(service),
             experienceSentences[0] || "",
             pick(qualityLines)
@@ -246,17 +287,24 @@ export const generateReview = (service: string, experience: string): string => {
             pick(qualityLines),
             pick(serviceTemplates)(service),
             experienceSentences[0] || "",
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
     } else if (structureType === 7) {
         // The "Hybrid" (NEW) - Mixes opener and service in reverse
+        // Custom opener here, so check location manually
+        let hybridOpener = `I decided to try J & G for a ${service} and I'm glad I did.`;
+        if (shouldMentionLocation && !locationMentioned && Math.random() < 0.5) {
+            hybridOpener = `I decided to try J & G in Chatham for a ${service} and I'm glad I did.`;
+            locationMentioned = true;
+        }
+
         const parts = [
-            `I decided to try J & G for a ${service} and I'm glad I did.`,
+            hybridOpener,
             pick(qualityLines),
             experienceSentences[0] || "",
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
@@ -265,17 +313,17 @@ export const generateReview = (service: string, experience: string): string => {
         const parts = [
             pick(serviceTemplates)(service),
             "Professional, efficient, and fair.", // Hardcoded bridge for variety
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
 
     } else {
         // The "Enthusiastic" (NEW)
         const parts = [
-            pick(openers),
+            getOpener(),
             "Seriously, just go here.",
             pick(serviceTemplates)(service),
-            pick(closings)
+            getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
     }
