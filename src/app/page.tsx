@@ -1,8 +1,8 @@
-// ... (imports)
+"use client";
+
 import { useState } from "react";
 import { ReviewForm, ReviewData } from "@/components/ReviewForm";
 import { ReviewAction } from "@/components/ReviewAction";
-// LandingSelection import removed
 
 export default function Home() {
   const [step, setStep] = useState<"form" | "result">("form"); // Default to form
@@ -10,7 +10,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async (data: ReviewData) => {
-    // ... (same as before)
     setIsLoading(true);
     try {
       const response = await fetch("/api/generate", {
