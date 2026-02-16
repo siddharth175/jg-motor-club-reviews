@@ -1,16 +1,16 @@
-"use client";
-
+// ... (imports)
 import { useState } from "react";
 import { ReviewForm, ReviewData } from "@/components/ReviewForm";
 import { ReviewAction } from "@/components/ReviewAction";
-import { LandingSelection } from "@/components/LandingSelection";
+// LandingSelection import removed
 
 export default function Home() {
-  const [step, setStep] = useState<"landing" | "form" | "result">("landing");
+  const [step, setStep] = useState<"form" | "result">("form"); // Default to form
   const [generatedReview, setGeneratedReview] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async (data: ReviewData) => {
+    // ... (same as before)
     setIsLoading(true);
     try {
       const response = await fetch("/api/generate", {
@@ -61,10 +61,6 @@ export default function Home() {
 
               <div className="relative bg-[#0F0F0F] border border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 backdrop-blur-xl">
 
-                {step === "landing" && (
-                  <LandingSelection onSelectAI={() => setStep("form")} />
-                )}
-
                 {step === "form" && (
                   <ReviewForm onGenerate={handleGenerate} isLoading={isLoading} />
                 )}
@@ -72,7 +68,7 @@ export default function Home() {
                 {step === "result" && (
                   <ReviewAction
                     initialReview={generatedReview}
-                    onReset={() => setStep("landing")}
+                    onReset={() => setStep("form")}
                   />
                 )}
               </div>
