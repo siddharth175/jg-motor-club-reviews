@@ -102,7 +102,18 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
 
                             {/* Quick Tags */}
                             <div className="flex flex-wrap gap-2">
-                                {["Fast Service ⚡", "Friendly Team 😊", "Fair Price 💰", "Clean Shop ✨"].map(tag => (
+                                {[
+                                    "Fast Service",
+                                    "Friendly Team",
+                                    "Fair Price",
+                                    "Clean Shop",
+                                    "Professional Staff",
+                                    "Honest Mechanics",
+                                    "Great Communication",
+                                    "Trustworthy",
+                                    "Quality Work",
+                                    "Highly Recommended"
+                                ].map(tag => (
                                     <button
                                         key={tag}
                                         type="button"
