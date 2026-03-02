@@ -174,8 +174,6 @@ export const generateReview = (service: string, experience: string): string => {
         "Worth the trip from anywhere in Chatham.",
     ];
 
-    const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
-
     let polishedExperience = experience ? experience.trim() : "";
     if (polishedExperience && !/[.!?]$/.test(polishedExperience)) polishedExperience += ".";
 
@@ -185,6 +183,41 @@ export const generateReview = (service: string, experience: string): string => {
         .map(s => s.trim())
         .filter(s => s.length > 0)
         .map(s => s + ".");
+
+    // --- SHUFFLE BAG LOGIC ---
+    const getShuffleBag = <T>(id: string, arr: T[], resetIfEmpty = true): (() => T | undefined) => {
+        // We use a global variable 'globalShuffleBags' rather than attaching to the function
+        // because we are in a module scoped to the process. Route handlers in Next.js might 
+        // recreate the module or use standard closures which persist.
+        if (!(global as any).shuffleBags) {
+            (global as any).shuffleBags = {};
+        }
+
+        const bags = (global as any).shuffleBags;
+
+        if (!bags[id] || bags[id].length === 0) {
+            // Shuffle copy of array
+            bags[id] = [...arr].sort(() => Math.random() - 0.5);
+        }
+
+        return () => {
+            if (bags[id].length === 0 && resetIfEmpty) {
+                bags[id] = [...arr].sort(() => Math.random() - 0.5);
+            }
+            return bags[id].pop();
+        };
+    };
+
+    const nextOpenerGeneral = getShuffleBag<string>('openersGeneral', openersGeneral);
+    const nextOpenerLocation = getShuffleBag<string>('openersLocation', openersLocation);
+    const nextServiceTemplate = getShuffleBag<(s: string) => string>('serviceTemplates', serviceTemplates);
+    const nextQualityLine = getShuffleBag<string>('qualityLines', qualityLines);
+    const nextClosingGeneral = getShuffleBag<string>('closingsGeneral', closingsGeneral);
+    const nextClosingLocation = getShuffleBag<string>('closingsLocation', closingsLocation);
+    
+    // Structure types 0 through 9
+    const structureTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const nextStructureType = getShuffleBag<number>('structureTypes', structureTypes);
 
     // --- LOGIC TO ENSURE ~50% LOCATION MENTION ---
     const shouldMentionLocation = Math.random() < 0.5; // Target: 50%
@@ -196,10 +229,10 @@ export const generateReview = (service: string, experience: string): string => {
             // 50% chance to do it in opener if we need to mention location
             if (Math.random() < 0.5) {
                 locationMentioned = true;
-                return pick(openersLocation);
+                return nextOpenerLocation() as string;
             }
         }
-        return pick(openersGeneral);
+        return nextOpenerGeneral() as string;
     };
 
     // Helper to get a closing
@@ -207,25 +240,25 @@ export const generateReview = (service: string, experience: string): string => {
         if (shouldMentionLocation && !locationMentioned) {
             // Must mention it now if we haven't yet
             locationMentioned = true;
-            return pick(closingsLocation);
+            return nextClosingLocation() as string;
         }
         // If we already mentioned it, use general closing to avoid repetition
         // Or if we don't need to mention it, use general
-        return pick(closingsGeneral);
+        return nextClosingGeneral() as string;
     };
     // ---------------------------------------------
 
     // MORE STRUCTURE TYPES (increased from 6 to 10)
-    const structureType = Math.floor(Math.random() * 10);
+    const structureType = nextStructureType();
     let review = "";
 
     if (structureType === 0) {
         // Classic: Opener -> Service -> Experience -> Quality -> Closing
         const parts = [
             getOpener(),
-            pick(serviceTemplates)(service),
+            (nextServiceTemplate() as Function)(service),
             experienceSentences[0] || "",
-            pick(qualityLines),
+            nextQualityLine(),
             getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
@@ -233,9 +266,9 @@ export const generateReview = (service: string, experience: string): string => {
     } else if (structureType === 1) {
         // Direct: Service -> Quality -> Experience -> Closing
         const parts = [
-            pick(serviceTemplates)(service),
+            (nextServiceTemplate() as Function)(service),
             experienceSentences[0] || "",
-            pick(qualityLines),
+            nextQualityLine(),
             getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
@@ -245,7 +278,7 @@ export const generateReview = (service: string, experience: string): string => {
         const parts = [
             getOpener(),
             experienceSentences[0] || "",
-            pick(qualityLines),
+            nextQualityLine(),
             `They really made the ${service} an easy process.`,
             getClosing()
         ];
@@ -254,8 +287,8 @@ export const generateReview = (service: string, experience: string): string => {
     } else if (structureType === 3) {
         // Short & Sweet (2-3 sentences)
         const parts = [
-            pick(serviceTemplates)(service),
-            experienceSentences[0] || pick(qualityLines),
+            (nextServiceTemplate() as Function)(service),
+            experienceSentences[0] || nextQualityLine(),
             getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
@@ -264,9 +297,9 @@ export const generateReview = (service: string, experience: string): string => {
         // Detailed (use all customer sentences)
         const parts = [
             getOpener(),
-            pick(serviceTemplates)(service),
+            (nextServiceTemplate() as Function)(service),
             ...experienceSentences,
-            pick(qualityLines),
+            nextQualityLine(),
             getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
@@ -275,17 +308,17 @@ export const generateReview = (service: string, experience: string): string => {
         // Recommendation-first
         const parts = [
             getClosing(),
-            pick(serviceTemplates)(service),
+            (nextServiceTemplate() as Function)(service),
             experienceSentences[0] || "",
-            pick(qualityLines)
+            nextQualityLine()
         ];
         review = parts.filter(Boolean).join(" ");
 
     } else if (structureType === 6) {
         // Quality-first (NEW)
         const parts = [
-            pick(qualityLines),
-            pick(serviceTemplates)(service),
+            nextQualityLine(),
+            (nextServiceTemplate() as Function)(service),
             experienceSentences[0] || "",
             getClosing()
         ];
@@ -302,7 +335,7 @@ export const generateReview = (service: string, experience: string): string => {
 
         const parts = [
             hybridOpener,
-            pick(qualityLines),
+            nextQualityLine(),
             experienceSentences[0] || "",
             getClosing()
         ];
@@ -311,7 +344,7 @@ export const generateReview = (service: string, experience: string): string => {
     } else if (structureType === 8) {
         // The "Concise Professional" (NEW)
         const parts = [
-            pick(serviceTemplates)(service),
+            (nextServiceTemplate() as Function)(service),
             "Professional, efficient, and fair.", // Hardcoded bridge for variety
             getClosing()
         ];
@@ -322,7 +355,7 @@ export const generateReview = (service: string, experience: string): string => {
         const parts = [
             getOpener(),
             "Seriously, just go here.",
-            pick(serviceTemplates)(service),
+            (nextServiceTemplate() as Function)(service),
             getClosing()
         ];
         review = parts.filter(Boolean).join(" ");
