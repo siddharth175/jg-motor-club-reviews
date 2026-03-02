@@ -2,6 +2,7 @@
 export const generateReview = (service: string, experience: string): string => {
     // SEPARATE OPENERS INTO GENERAL AND LOCATION-SPECIFIC
     const openersGeneral = [
+        // Standard
         "Just left J & G Motor Club and felt compelled to write a review.",
         "Great service at J & G Motor Club as always.",
         "Honestly, it's hard to find a good mechanic these days, but J & G is a gem.",
@@ -41,6 +42,29 @@ export const generateReview = (service: string, experience: string): string => {
         "Grateful for the honest advice and great work.",
         "The best car care experience I've had.",
         "J & G earned my trust immediately.",
+
+        // Gen-Z vibe
+        "lowkey the best spot in town.",
+        "fr this place is goated.",
+        "W mechanic. no cap.",
+        "not them fixing my car in like 10 mins 😭",
+        "it's giving reliable.",
+        "the goat of local mechanics.",
+
+        // Older Demographic
+        "Good mechanic in town. Hard to find these days.",
+        "Fast, easy in and out. Good people.",
+        "Stopped in for the first time and I'm very impressed.",
+        "A+ service from a good honest crew.",
+        "Good honest mechanic in town.",
+        "Back in my day it was hard to find a trustworthy shop, but these folks fit the bill.",
+
+        // Professional 20-45 years
+        "Super efficient. Dropped it off before work and picked it up after.",
+        "Honestly just a hassle-free experience overall.",
+        "My go-to spot now. Way better than the dealership.",
+        "Five stars. Incredibly transparent pricing.",
+        "Booking was easy, and the turnaround time was phenomenal."
     ];
 
     const openersLocation = [
@@ -57,6 +81,7 @@ export const generateReview = (service: string, experience: string): string => {
     ];
 
     const serviceTemplates = [
+        // Standard
         (s: string) => `I went in for a ${s} and the process was smooth and efficient.`,
         (s: string) => `Needed a ${s} and they got me in and out quickly.`,
         (s: string) => `The team handled my ${s} with great professionalism.`,
@@ -81,9 +106,28 @@ export const generateReview = (service: string, experience: string): string => {
         (s: string) => `Expert handling of my ${s}.`,
         (s: string) => `Top quality ${s}.`,
         (s: string) => `Reasonable time and cost for a ${s}.`,
+
+        // Gen-Z vibe
+        (s: string) => `needed a ${s} and they slayed.`,
+        (s: string) => `slid in for a ${s} and they got it done super quick.`,
+        (s: string) => `my car needed a ${s} and they understood the assignment.`,
+        (s: string) => `got a ${s} and it didn't even break the bank.`,
+
+        // Older Demographic
+        (s: string) => `Came in for a ${s} and they took right care of it.`,
+        (s: string) => `Got my ${s} sorted out without any fuss.`,
+        (s: string) => `Needed a ${s} and they fixed it up right quick.`,
+        (s: string) => `Brought her in for a ${s} and they did a bang-up job.`,
+
+        // Professional 20-45 years
+        (s: string) => `Booked a ${s} and the turnaround time was phenomenal.`,
+        (s: string) => `Went in for a ${s} and they texted me updates the whole time.`,
+        (s: string) => `The ${s} was handled perfectly and under budget.`,
+        (s: string) => `Got a ${s} and they didn't try to tack on extra fees.`
     ];
 
     const qualityLines = [
+        // Standard
         "The staff was friendly and transparent about the work.",
         "It's hard to find a mechanic you can trust, but these guys are the real deal.",
         "They explained everything clearly and didn't try to upsell me.",
@@ -123,10 +167,36 @@ export const generateReview = (service: string, experience: string): string => {
         "Efficient and skilled team.",
         "No surprises on the bill.",
         "Just a great group of people.",
+
+        // Gen-Z vibe
+        "vibes were immaculate.",
+        "they didn't scam me, big W.",
+        "S tier service tbh.",
+        "literally so fast and easy.",
+        "no red flags here.",
+        "pass the vibe check for sure.",
+        "mechanics usually give me anxiety but they were chill.",
+
+        // Older Demographic
+        "Reminds me of how businesses used to be run.",
+        "Reasonable prices and no malarkey.",
+        "Young men at the shop were very polite and respectful.",
+        "Told them what was wrong, they fixed it. Simple as that.",
+        "A square deal from honest folks.",
+        "Excellent work from a good group of fellas.",
+
+        // Professional 20-45 years
+        "Great communication, they didn't try to upsell me.",
+        "Solid team. Transparent pricing and clear explanations.",
+        "Really appreciated the text updates.",
+        "Very professional operation, highly recommend.",
+        "They respect your budget and your time.",
+        "Easy online booking and contactless payment made it a breeze."
     ];
 
     // SEPARATE CLOSINGS INTO GENERAL AND LOCATION-SPECIFIC
     const closingsGeneral = [
+        // Standard
         "I'll definitely be coming back for future service.",
         "Five stars for the whole team!",
         "Thanks to J & G for keeping my car running smoothly.",
@@ -159,6 +229,27 @@ export const generateReview = (service: string, experience: string): string => {
         "A perfect 10/10.",
         "Grateful for their help.",
         "Highly satisfied.",
+
+        // Gen-Z vibe
+        "10/10 would recommend.",
+        "never going anywhere else fr.",
+        "big shoutout to the team.",
+        "totally coming back.",
+        "catch me here for my next oil change.",
+
+        // Older Demographic
+        "God bless this business.",
+        "Will be telling my neighbors about them.",
+        "Thank you kindly for the good work.",
+        "Hard to find good people like this anymore.",
+        "Keep up the good work, gentlemen.",
+
+        // Professional 20-45 years
+        "Will definitely use them again for future maintenance.",
+        "Highly rate these guys.",
+        "Saved me a trip to the dealer.",
+        "Incredible value, will be back.",
+        "Definitely adding them to my contacts."
     ];
 
     const closingsLocation = [
@@ -214,7 +305,7 @@ export const generateReview = (service: string, experience: string): string => {
     const nextQualityLine = getShuffleBag<string>('qualityLines', qualityLines);
     const nextClosingGeneral = getShuffleBag<string>('closingsGeneral', closingsGeneral);
     const nextClosingLocation = getShuffleBag<string>('closingsLocation', closingsLocation);
-    
+
     // Structure types 0 through 9
     const structureTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     const nextStructureType = getShuffleBag<number>('structureTypes', structureTypes);
