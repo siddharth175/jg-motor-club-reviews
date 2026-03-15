@@ -6,7 +6,7 @@ export const generateReview = (service: string, experience: string): string => {
         (global as any).historyQueue = [] as string[];
     }
 
-    const maxHistoryCount = 500;
+    const maxHistoryCount = 2000;
     const historySet = (global as any).reviewHistory as Set<string>;
     const historyQueue = (global as any).historyQueue as string[];
 
@@ -317,8 +317,8 @@ export const generateReview = (service: string, experience: string): string => {
         const nextClosingGeneral = getShuffleBag<string>('closingsGeneral', closingsGeneral);
         const nextClosingLocation = getShuffleBag<string>('closingsLocation', closingsLocation);
 
-        // Structure types 0 through 9
-        const structureTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        // Structure types 0 through 15
+        const structureTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
         const nextStructureType = getShuffleBag<number>('structureTypes', structureTypes);
 
         // --- LOGIC TO ENSURE ~50% LOCATION MENTION ---
@@ -452,7 +452,7 @@ export const generateReview = (service: string, experience: string): string => {
             ];
             review = parts.filter(Boolean).join(" ");
 
-        } else {
+        } else if (structureType === 9) {
             // The "Enthusiastic" (NEW)
             const parts = [
                 getOpener(),
@@ -461,13 +461,106 @@ export const generateReview = (service: string, experience: string): string => {
                 getClosing()
             ];
             review = parts.filter(Boolean).join(" ");
+        } else if (structureType === 10) {
+            // Ultra short 1
+            const parts = [getOpener()];
+            review = parts.filter(Boolean).join(" ");
+        } else if (structureType === 11) {
+            // Ultra short 2
+            const parts = [nextQualityLine()];
+            review = parts.filter(Boolean).join(" ");
+        } else if (structureType === 12) {
+            // Ultra short 3
+            const parts = [(nextServiceTemplate() as Function)(service)];
+            review = parts.filter(Boolean).join(" ");
+        } else if (structureType === 13) {
+            // Long and rambling
+            const parts = [
+                getOpener(),
+                ...experienceSentences,
+                (nextServiceTemplate() as Function)(service),
+                nextQualityLine(),
+                "I honestly couldn't be happier with how it turned out.",
+                getClosing()
+            ];
+            review = parts.filter(Boolean).join(" ");
+        } else if (structureType === 14) {
+            // Very detailed
+            let intro = shouldMentionLocation && !locationMentioned ? nextOpenerLocation() as string : nextOpenerGeneral() as string;
+            const parts = [
+                intro,
+                "They were super professional right from the start.",
+                (nextServiceTemplate() as Function)(service),
+                ...experienceSentences,
+                nextQualityLine(),
+                "It's really refreshing to see this level of dedication.",
+                getClosing()
+            ];
+            review = parts.filter(Boolean).join(" ");
+        } else {
+            // Casual narrative
+            const parts = [
+                "So I was looking for a spot to get some work done.",
+                (nextServiceTemplate() as Function)(service),
+                nextQualityLine(),
+                ...experienceSentences,
+                "Turned out to be a great choice.",
+                getClosing()
+            ];
+            review = parts.filter(Boolean).join(" ");
         }
 
-        return review;
+        // Post-processing for human-like random variation
+        const postProcess = (text: string): string => {
+            let processed = text.replace(/\s+/g, ' ').trim();
+            const variationType = Math.random();
+
+            if (variationType < 0.15) {
+                // All lowercase, Gen Z / casual style
+                processed = processed.toLowerCase();
+                processed = processed.replace(/\./g, '');
+            } else if (variationType < 0.25) {
+                // EXTREME ENTHUSIASM
+                processed = processed.replace(/\./g, '!');
+                if (!processed.endsWith('!')) processed += '!!!';
+            } else if (variationType < 0.35) {
+                // very casual
+                processed = processed.replace(/\band\b/gi, '&');
+                processed = processed.replace(/\byou\b/gi, 'u');
+                processed = processed.replace(/\bare\b/gi, 'r');
+                processed = processed.replace(/\bdefinitely\b/gi, 'def');
+                processed = processed.toLowerCase();
+            } else if (variationType < 0.45) {
+                // Remove trailing punctuation
+                processed = processed.replace(/[.!?]$/, '');
+            } else if (variationType < 0.55) {
+                // Add some leading filler
+                const fillers = ["Honestly, ", "Tbh ", "Wow. ", "Okay so, ", "Man, ", "Just gonna say, "];
+                const filler = fillers[Math.floor(Math.random() * fillers.length)];
+                processed = filler + processed.charAt(0).toLowerCase() + processed.slice(1);
+            } else if (variationType < 0.65) {
+                // Typo injection or missing apostrophes
+                processed = processed.replace(/I'm/g, 'Im').replace(/don't/g, 'dont').replace(/didn't/g, 'didnt').replace(/it's/ig, 'its');
+            } else if (variationType < 0.70) {
+                // UPPERCASE (angry/super excited) but only sometimes
+                processed = processed.toUpperCase();
+            }
+
+            // Sometimes add a random emoji for flavor if it fits
+            if (Math.random() < 0.15) {
+                const emojis = ['🔥', '💯', '🙏', '🙌', '🚗', '👍', '👌', '😎', '⭐', '⭐⭐⭐⭐⭐', '🛠️', '✨'];
+                const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+                processed += ` ${emoji}`;
+            }
+
+            return processed;
+        };
+
+        return postProcess(review);
     };
 
     let attempt = 0;
-    const maxAttempts = 50;
+    const maxAttempts = 200;
     let finalReview = "";
 
     // Attempt to generate a unique review
